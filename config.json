@@ -1,0 +1,14 @@
+{
+    "app_name": "Cargos",
+    "description": "listado de cargos",
+    "author": "Ower A. Campos",
+    "email": "ower.campos@soandes.co",
+    "create_ate": "Thu Sep 07 2023 09:24:48 GMT-0500 (Colombia Standard Time)",
+    "excel_file": "Cargos - Empresas.xlsb",
+    "vba_folder": "vba-files",
+    "ribbon_file": "customUI14",
+    "ribbon_folder": "ribbons",
+    "logs": "on",
+    "xvba_packages": {},
+    "xvba_dev_packages": {}
+}
