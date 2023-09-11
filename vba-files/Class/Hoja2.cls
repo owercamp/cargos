@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "Hoja3"
+Attribute VB_Name = "Hoja2"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -10,9 +10,8 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Private Sub Worksheet_Change(ByVal Target As Range)
-
   On Error Resume Next
-  If Target.Column = 1 And Me.CodeName = "Hoja3" Then
+  If Target.Column = 1 And Me.CodeName = "Hoja2" Then
     Application.EnableEvents = False
     Application.ScreenUpdating = False
 
@@ -38,6 +37,5 @@ Private Sub Worksheet_Change(ByVal Target As Range)
     Application.EnableEvents = True
     Application.ScreenUpdating = True
   End If
-  
 End Sub
 
