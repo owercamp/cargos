@@ -4,7 +4,6 @@ Option Explicit
 Public Sub Checked()
   ' This subroutine sets the style of the Selection to "Notas"
   ' It is invoked when the Checked attribute is triggered
-  Attribute Checked.VB_ProcData.VB_Invoke_Func = "j\n14"
   Selection.Style = "Notas"
 End Sub
 
@@ -14,63 +13,63 @@ Public Sub btn_SQL_Click()
   Dim data As Range
   Dim num As Integer, x As Long
   Dim MyFile As Variant
-  Dim Item, FSO As Object
-  Set FSO = CreateObject("Scripting.FileSystemObject")
+  Dim Item, fso As Object
+  Set fso = CreateObject("Scripting.FileSystemObject")
 
-  On Error Goto NotFound:
-    ' Delete the existing SQL file
-    FSO.DeleteFile ("C:\Users\SOANDES-DSOFT\Documents\MACRO\testfile.sql")
-  On Error Goto 0
+  On Error GoTo NotFound:
+  ' Delete the existing SQL file
+  fso.DeleteFile ("C:\Users\SOANDES-DSOFT\Documents\MACRO\testfile.sql")
+  On Error GoTo 0
 
-    ' Open the SQL file for appending
-    Set MyFile = FSO.OpenTextFile("C:\Users\SOANDES-DSOFT\Documents\MACRO\testfile.sql", ForAppending, True, TristateTrue)
-    Set data = Selection
-    num = data.CountLarge
+  ' Open the SQL file for appending
+  Set MyFile = fso.OpenTextFile("C:\Users\SOANDES-DSOFT\Documents\MACRO\testfile.sql", ForAppending, True, TristateTrue)
+  Set data = Selection
+  num = data.CountLarge
 
-    ' Write the initial SQL statement
-    MyFile.WriteLine "INSERT INTO cargos (`id`,`id_categoria_cargo`,`nombre`) VALUES"
-    For Each Item In data
-      If Item <> "" And num <> 1 Then
-        ' Write the SQL line for each item
-        MyFile.WriteLine Item
-        num = num - 1
-      Elseif Item <> "" And num = 1 Then
-        ' Write the last SQL line with the last item
-        MyFile.WriteLine reemplazarUltimoCaracter(Item)
-        num = num - 1
-      End If
-    Next Item
-    MyFile.WriteLine ""
-    MyFile.Close
+  ' Write the initial SQL statement
+  MyFile.WriteLine "INSERT INTO cargos (`id`,`id_categoria_cargo`,`nombre`) VALUES"
+  For Each Item In data
+    If Item <> "" And num <> 1 Then
+      ' Write the SQL line for each item
+      MyFile.WriteLine Item
+      num = num - 1
+    ElseIf Item <> "" And num = 1 Then
+      ' Write the last SQL line with the last item
+      MyFile.WriteLine reemplazarUltimoCaracter(Item)
+      num = num - 1
+    End If
+  Next Item
+  MyFile.WriteLine ""
+  MyFile.Close
 
-    Range(Selection.Offset(, -3), Selection.Offset(, -1)).Select
-    Dim information As Variant, tblCargo As Object, tblCargoOrigin As Object
-    information = Selection.Value
+  Range(Selection.Offset(, -3), Selection.Offset(, -1)).Select
+  Dim information As Variant, tblCargo As Object, tblCargoOrigin As Object
+  information = Selection.Value
 
-    ' Add the information to the tbl_cargo table
-    Set tblCargoOrigin = Workbooks("Queries SQL SIGAD.xlsb").Worksheets("BASE P").ListObjects("tbl_cargo")
+  ' Add the information to the tbl_cargo table
+  Set tblCargoOrigin = Workbooks("Queries SQL SIGAD.xlsb").Worksheets("BASE P").ListObjects("tbl_cargo")
 
-    For x = 1 To UBound(information, 1)
-      With tblCargoOrigin.ListRows.Add
-        .Range(1) = information(x, 1)
-        .Range(2) = information(x, 2)
-        .Range(3) = information(x, 3)
-      End With
-    DoEvents
-    Next
+  For x = 1 To UBound(information, 1)
+    With tblCargoOrigin.ListRows.Add
+      .Range(1) = information(x, 1)
+      .Range(2) = information(x, 2)
+      .Range(3) = information(x, 3)
+    End With
+  DoEvents
+  Next
 
-    Range(Selection, Selection.Offset(, 1)).Select
-    Selection.Style = "Notas"
-    Range("A1").End(xlDown).Select
-    ThisWorkbook.Save
+  Range(Selection, Selection.Offset(, 1)).Select
+  Selection.Style = "Notas"
+  Range("A1").End(xlDown).Select
+  ThisWorkbook.Save
 
-    MsgBox "Importaci" & ChrW(243) & "n Completa", vbInformation + vbOKOnly, "Importaci" & ChrW(243) & "n SQL"
+  MsgBox "Importaci" & ChrW(243) & "n Completa", vbInformation + vbOKOnly, "Importaci" & ChrW(243) & "n SQL"
 
-    ThisWorkbook.Close
+  ThisWorkbook.Close
 
-    Exit Sub
+  Exit Sub
 
-  NotFound:
+NotFound:
   Resume Next
 End Sub
 
