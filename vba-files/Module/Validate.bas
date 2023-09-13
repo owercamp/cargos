@@ -42,7 +42,7 @@ Public Sub btn_SQL_Click()
   MyFile.WriteLine ""
   MyFile.Close
 
-  Range(Selection.Offset(, -3), Selection.Offset(, -1)).Select
+  ThisWorkbook.ActiveSheet.Range(Selection.Offset(0, -3), Selection.Offset(0, -1)).Select
   Dim information As Variant, tblCargo As Object, tblCargoOrigin As Object
   information = Selection.Value
 
