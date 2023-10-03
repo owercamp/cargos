@@ -11,7 +11,7 @@ Public Sub btn_SQL_Click()
   ' This sub is executed when the SQL button is clicked
 
   Dim data As Range
-  Dim num As Integer, x As Long
+  Dim num As Integer
   Dim MyFile As Variant
   Dim Item, fso As Object
   Set fso = CreateObject("Scripting.FileSystemObject")
@@ -42,25 +42,39 @@ Public Sub btn_SQL_Click()
   MyFile.WriteLine ""
   MyFile.Close
 
-  ThisWorkbook.ActiveSheet.Range(Selection.Offset(0, -3), Selection.Offset(0, -1)).Select
-  Dim information As Variant, tblCargo As Object, tblCargoOrigin As Object
-  information = Selection.Value
+  ActiveCell.Offset(0, -3).Select
+  Dim information As Object, tblCargoOrigin As Object
+  Set information = Range(ActiveCell, ActiveCell.End(xlDown))
+
+  With Application
+    .ScreenUpdating = False
+    .EnableEvents = False
+    .Calculation = xlCalculationManual  
+  End With
 
   ' Add the information to the tbl_cargo table
   Set tblCargoOrigin = Workbooks("Queries SQL SIGAD.xlsb").Worksheets("BASE P").ListObjects("tbl_cargo")
 
-  For x = 1 To UBound(information, 1)
+  For Each Item In information
     With tblCargoOrigin.ListRows.Add
-      .Range(1) = information(x, 1)
-      .Range(2) = information(x, 2)
-      .Range(3) = information(x, 3)
+      .Range(1) = Item.Value
+      .Range(2) = Item.Offset(, 1).Value
+      .Range(3) = Item.Offset(, 2).Value
     End With
-  DoEvents
-  Next
+    DoEvents
+  Next Item
 
-  Range(Selection, Selection.Offset(, 1)).Select
+  information.Select
+  Range(Selection, Selection.Offset(, 3)).Select
   Selection.Style = "Notas"
   Range("A1").End(xlDown).Select
+
+  With Application
+    .ScreenUpdating = True
+    .EnableEvents = True
+    .Calculation = xlCalculationAutomatic  
+  End With
+
   ThisWorkbook.Save
 
   MsgBox "Importaci" & ChrW(243) & "n Completa", vbInformation + vbOKOnly, "Importaci" & ChrW(243) & "n SQL"
