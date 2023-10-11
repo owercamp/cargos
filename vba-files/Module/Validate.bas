@@ -15,14 +15,20 @@ Public Sub btn_SQL_Click()
   Dim MyFile As Variant
   Dim Item, fso As Object
   Set fso = CreateObject("Scripting.FileSystemObject")
-
-  On Error GoTo NotFound:
-  ' Delete the existing SQL file
-  fso.DeleteFile ("C:\Users\SOANDES-DSOFT\Documents\MACRO\testfile.sql")
-  On Error GoTo 0
+  
+  Dim btn As MsoButtonState
+  
+  btn = MsgBox(ChrW(191) + "desea anexar nueva informaci" + ChrW(243) + "n al archivo testfile.sql" + ChrW(63), vbDefaultButton1 + vbExclamation + vbYesNo, "SQL Cargos")
+  
+  If btn = vbNo Then
+    On Error Resume Next
+    ' Delete the existing SQL file
+    fso.DeleteFile ("C:\Users\GESTION DOCUMENTAL\Desktop\OwerCampos\testfile.sql")
+    On Error GoTo 0
+  End If
 
   ' Open the SQL file for appending
-  Set MyFile = fso.OpenTextFile("C:\Users\SOANDES-DSOFT\Documents\MACRO\testfile.sql", ForAppending, True, TristateTrue)
+  Set MyFile = fso.OpenTextFile("C:\Users\GESTION DOCUMENTAL\Desktop\OwerCampos\testfile.sql", ForAppending, True, TristateTrue)
   Set data = Selection
   num = data.CountLarge
 
@@ -49,19 +55,22 @@ Public Sub btn_SQL_Click()
   With Application
     .ScreenUpdating = False
     .EnableEvents = False
-    .Calculation = xlCalculationManual  
+    .Calculation = xlCalculationManual
   End With
+  
+  Dim start, final
 
   ' Add the information to the tbl_cargo table
   Set tblCargoOrigin = Workbooks("Queries SQL SIGAD.xlsb").Worksheets("BASE P").ListObjects("tbl_cargo")
 
+  start = Timer
   For Each Item In information
     With tblCargoOrigin.ListRows.Add
       .Range(1) = Item.Value
       .Range(2) = Item.Offset(, 1).Value
       .Range(3) = Item.Offset(, 2).Value
     End With
-    DoEvents
+  DoEvents
   Next Item
 
   information.Select
@@ -72,19 +81,18 @@ Public Sub btn_SQL_Click()
   With Application
     .ScreenUpdating = True
     .EnableEvents = True
-    .Calculation = xlCalculationAutomatic  
+    .Calculation = xlCalculationAutomatic
   End With
 
   ThisWorkbook.Save
 
   MsgBox "Importaci" & ChrW(243) & "n Completa", vbInformation + vbOKOnly, "Importaci" & ChrW(243) & "n SQL"
-
+  
+  final = Timer
+  
+  Application.StatusBar = "Tiempo total: " & CStr(final - start)
   ThisWorkbook.Close
 
-  Exit Sub
-
-NotFound:
-  Resume Next
 End Sub
 
 Private Function reemplazarUltimoCaracter(ByVal texto As String) As String
