@@ -17,7 +17,7 @@ Private Sub Worksheet_Change(ByVal Target As Range)
     On Error Resume Next
     If Target.Column = 1 Then
       Set myRange = Range(Target, Target.Offset(, 3)).Select
-    ElseIf Target.Column > 1 Then 
+    ElseIf Target.Column > 1 Then
       Set myRange = Target
     End If
     With Selection.Interior
