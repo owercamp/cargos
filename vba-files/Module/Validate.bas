@@ -21,14 +21,14 @@ Public Sub btn_SQL_Click()
   btn = MsgBox(ChrW(191) + "desea anexar nueva informaci" + ChrW(243) + "n al archivo testfile.sql" + ChrW(63), vbDefaultButton1 + vbExclamation + vbYesNo, "SQL Cargos")
   
   If btn = vbNo Then
-    On Error Resume Next
     ' Delete the existing SQL file
-    fso.DeleteFile ("C:\Users\GESTION DOCUMENTAL\Desktop\OwerCampos\testfile.sql")
-    On Error GoTo 0
+    If fso.FileExists( Workbooks("Queries SQL SIGAD.xlsb").Worksheets("RUTAS").Range("$C$9").Value & "\testfile.sql" ) Then
+      fso.DeleteFile ( Workbooks("Queries SQL SIGAD.xlsb").Worksheets("RUTAS").Range("$C$9").Value & "\testfile.sql")
+    End If
   End If
 
   ' Open the SQL file for appending
-  Set MyFile = fso.OpenTextFile("C:\Users\GESTION DOCUMENTAL\Desktop\OwerCampos\testfile.sql", ForAppending, True, TristateTrue)
+  Set MyFile = fso.OpenTextFile( Workbooks("Queries SQL SIGAD.xlsb").Worksheets("RUTAS").Range("$C$9").Value & "\testfile.sql", ForAppending, True, TristateTrue)
   Set data = Selection
   num = data.CountLarge
 
@@ -50,7 +50,11 @@ Public Sub btn_SQL_Click()
 
   ActiveCell.Offset(0, -3).Select
   Dim information As Object, tblCargoOrigin As Object
-  Set information = Range(ActiveCell, ActiveCell.End(xlDown))
+  If ActiveCell.Offset(1, 0).Value <> vbNullString Then
+    Set information = Range(ActiveCell, ActiveCell.End(xlDown))
+  Else
+    Set information = Range(ActiveCell, ActiveCell)
+  End If
 
   With Application
     .ScreenUpdating = False
@@ -58,12 +62,9 @@ Public Sub btn_SQL_Click()
     .Calculation = xlCalculationManual
   End With
   
-  Dim start, final
-
   ' Add the information to the tbl_cargo table
   Set tblCargoOrigin = Workbooks("Queries SQL SIGAD.xlsb").Worksheets("BASE P").ListObjects("tbl_cargo")
 
-  start = Timer
   For Each Item In information
     With tblCargoOrigin.ListRows.Add
       .Range(1) = Item.Value
@@ -88,9 +89,6 @@ Public Sub btn_SQL_Click()
 
   MsgBox "Importaci" & ChrW(243) & "n Completa", vbInformation + vbOKOnly, "Importaci" & ChrW(243) & "n SQL"
   
-  final = Timer
-  
-  Application.StatusBar = "Tiempo total: " & CStr(final - start)
   ThisWorkbook.Close
 
 End Sub
