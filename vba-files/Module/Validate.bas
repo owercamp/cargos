@@ -22,13 +22,13 @@ Public Sub btn_SQL_Click()
   
   If btn = vbNo Then
     ' Delete the existing SQL file
-    If fso.FileExists( Workbooks("Queries SQL SIGAD.xlsb").Worksheets("RUTAS").Range("$C$9").Value & "\testfile.sql" ) Then
-      fso.DeleteFile ( Workbooks("Queries SQL SIGAD.xlsb").Worksheets("RUTAS").Range("$C$9").Value & "\testfile.sql")
+    If fso.FileExists(Workbooks("Queries SQL SIGAD.xlsb").Worksheets("RUTAS").Range("$C$9").Value & "\testfile.sql") Then
+      fso.DeleteFile (Workbooks("Queries SQL SIGAD.xlsb").Worksheets("RUTAS").Range("$C$9").Value & "\testfile.sql")
     End If
   End If
 
   ' Open the SQL file for appending
-  Set MyFile = fso.OpenTextFile( Workbooks("Queries SQL SIGAD.xlsb").Worksheets("RUTAS").Range("$C$9").Value & "\testfile.sql", ForAppending, True, TristateTrue)
+  Set MyFile = fso.OpenTextFile(Workbooks("Queries SQL SIGAD.xlsb").Worksheets("RUTAS").Range("$C$9").Value & "\testfile.sql", ForAppending, True, TristateTrue)
   Set data = Selection
   num = data.CountLarge
 
@@ -49,7 +49,8 @@ Public Sub btn_SQL_Click()
   MyFile.Close
 
   ActiveCell.Offset(0, -3).Select
-  Dim information As Object, tblCargoOrigin As Object
+  Dim information As Object, book As String
+  book = ThisWorkbook.Name
   If ActiveCell.Offset(1, 0).Value <> vbNullString Then
     Set information = Range(ActiveCell, ActiveCell.End(xlDown))
   Else
@@ -63,17 +64,23 @@ Public Sub btn_SQL_Click()
   End With
   
   ' Add the information to the tbl_cargo table
-  Set tblCargoOrigin = Workbooks("Queries SQL SIGAD.xlsb").Worksheets("BASE P").ListObjects("tbl_cargo")
+  Windows("Queries SQL SIGAD.xlsb").Activate
+  Worksheets("BASE P").Select
+  Range("tbl_cargo").End(xlDown).Offset(1, 0).Select
 
+  num = 0
   For Each Item In information
-    With tblCargoOrigin.ListRows.Add
-      .Range(1) = Item.Value
-      .Range(2) = Item.Offset(, 1).Value
-      .Range(3) = Item.Offset(, 2).Value
-    End With
+    ActiveCell = Item.Value
+    ActiveCell.Offset(0, 1) = Item.Offset(, 1).Value
+    ActiveCell.Offset(0, 2) = Item.Offset(, 2).Value
+    num = num + 1
+    Application.StatusBar = "Importando: " & CStr(num)
+    ActiveCell.Offset(1, 0).Select
   DoEvents
   Next Item
 
+  Worksheets("TRABAJADORES").Select
+  Windows(book).Activate
   information.Select
   Range(Selection, Selection.Offset(, 3)).Select
   Selection.Style = "Notas"

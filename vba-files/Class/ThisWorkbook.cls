@@ -9,3 +9,6 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Option Explicit
 
+Private Sub Workbook_Open()
+  Application.EnableEvents = True
+End Sub
