@@ -52,9 +52,9 @@ Public Sub btn_SQL_Click()
   Dim information As Object, book As String
   book = ThisWorkbook.Name
   If ActiveCell.Offset(1, 0).Value <> vbNullString Then
-    Set information = Range(ActiveCell, ActiveCell.End(xlDown))
+    Set information = Range(Selection, Selection.End(xlDown))
   Else
-    Set information = Range(ActiveCell, ActiveCell)
+    Set information = Selection
   End If
 
   With Application
