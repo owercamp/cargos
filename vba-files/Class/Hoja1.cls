@@ -11,12 +11,15 @@ Option Explicit
 
 Private Sub Worksheet_Change(ByVal Target As Range)
   
-  If Me.CodeName = "Hoja1" Then
-    If Target.Column = 1 Then
-      Range(Target, Target.Offset(, 3)).Select
-    ElseIf Target.Column > 1 Then
-      Range(Target, Target).Select
-    End If
+  If Me.CodeName = "Hoja1" And Target.Column = 1 Then
+    Range(Target, Target.Offset(, 3)).Select
+    With Selection.Interior
+      .Pattern = xlNone
+      .TintAndShade = 0
+      .PatternTintAndShade = 0
+    End With
+  ElseIf Target.Column < 3 Then
+    Target.Select
     With Selection.Interior
       .Pattern = xlNone
       .TintAndShade = 0
