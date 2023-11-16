@@ -11,7 +11,7 @@ Option Explicit
 
 Private Sub Worksheet_Change(ByVal Target As Range)
   
-  If Me.CodeName = "Hoja1" And Target.Column = 1 Then
+  If Me.CodeName = "Hoja1" And Target.Column = 1 Or Target.Column = 4 Then
     Range(Target, Target.Offset(, 3)).Select
     With Selection.Interior
       .Pattern = xlNone
